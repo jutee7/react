@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { DataType } from "./DataType";
 import { columns } from "./columns";
+import { DataWrapper } from "./DataWrapper";
 
 
 const Data = () => {
@@ -27,9 +28,11 @@ const Data = () => {
 
     return (
         <>
-            <Table dataSource={dataSource} columns={columns} pagination={false}/>
-            <Button onClick={() => setPage(page - 1)} disabled={page < 2}>Previous</Button>
-            <Button onClick={() => setPage(page + 1)}>Next</Button>
+            <DataWrapper someWidth="400px">
+                <Table dataSource={dataSource} columns={columns} pagination={false}/>
+                <Button onClick={() => setPage(page - 1)} disabled={page < 2}>Previous</Button>
+                <Button onClick={() => setPage(page + 1)}>Next</Button>
+            </DataWrapper> 
         </>
     )
 };
