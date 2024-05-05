@@ -1,74 +1,36 @@
-import { Table } from "antd"
-import { ColumnsType } from "antd/es/table";
+import { Button, Table } from "antd"
 
-interface DataType {
-    key: String,
-    name: String,
-    lastName: String,
-    age: number,
-    address: String,
-    tags: String[],
-}
-
-const dataSource: DataType[] = [
-    {
-        key: '1',
-        name: "Миша",
-        lastName: "Рязанцев",
-        age: 19,
-        address: "Свиблово",
-        tags: ["музыка ", "танцы"],
-    },
-    {
-        key: '2',
-        name: 'Иван',
-        lastName: "Кулаков",
-        age: 19,
-        address: 'Преображенская площадь',
-        tags: ["прогер ", "кот василий"],
-    },
-    {
-        key: '3',
-        name: "Никита",
-        lastName: "Пич",
-        age: 20,
-        address: "где-то в Балашихе",
-        tags: ["прогер ", "ПВЗ"],
-    },
-];
-
-const columns: ColumnsType<DataType> = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Last name',
-        dataIndex: 'lastName',
-        key: 'lastName',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-    },
-    {
-        title: 'Tags',
-        dataIndex: 'tags',
-        key: 'tags',
-    },
-];
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { DataType } from "./DataType";
+import { columns } from "./columns";
 
 
 const Data = () => {
+
+    const [page, setPage] = useState<number>(1);
+
+    const [dataSource, setDataSource] =useState<DataType[]>();
+
+    const LIMIT_LIST_SCHOOL: number = 10;
+
+    useEffect(() => {
+        getUniversity(page, LIMIT_LIST_SCHOOL);
+    }, [page, LIMIT_LIST_SCHOOL]);
+
+    const offset = LIMIT_LIST_SCHOOL * page - LIMIT_LIST_SCHOOL
+
+    const getUniversity = async (page: number, limit: number) => {
+    const response = await axios.get(`http://universities.hipolabs.com/search?offset=${offset}&limit=${limit}`)
+    setDataSource(response.data);    
+}
+
     return (
-        <Table dataSource={dataSource} columns = {columns} />
+        <>
+            <Table dataSource={dataSource} columns={columns} pagination={false}/>
+            <Button onClick={() => setPage(page - 1)} disabled={page < 2}>Previous</Button>
+            <Button onClick={() => setPage(page + 1)}>Next</Button>
+        </>
     )
 };
 
